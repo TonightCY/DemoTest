@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+        <!--引入资源-->
+        <context:property-placeholder location="classpath:jdbc.properties"/>
+        <bean id="ds" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+            <property name="dbType" value="mysql"/>
+            <property name="url" value="${datasource.url}"/>
+            <property name="username" value="${datasource.username}"/>
+            <property name="password" value="${datasource.password}"/>
+        </bean>
+
+        <bean id="sf" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <property name="dataSource" ref="ds"/>
+            <property name="typeAliasesPackage" value="com.tonight.bean"/>
+            <property name="mapperLocations">
+                <array>
+                    <value>classpath:mapper/*Mapper.xml</value>
+                </array>
+            </property>
+            <property name="plugins">
+                <array>
+                    <bean class="com.github.pagehelper.PageInterceptor">
+                        <property name="properties">
+                            <props>
+                                <prop key="helperDialect">mysql</prop>
+                            </props>
+                        </property>
+                    </bean>
+                </array>
+            </property>
+        </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sf"/>
+        <property name="basePackage" value="com.tonight.mapper"></property>
+        <!--扫描到@Respository ,才会创建对象-->
+        <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+    </bean>
+
+    <bean id="tx" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds"/>
+    </bean>
+
+    <tx:annotation-driven proxy-target-class="true" transaction-manager="tx"></tx:annotation-driven>
+
+    <bean id="tt" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="tx"></property>
+    </bean>
+
+
+</beans>

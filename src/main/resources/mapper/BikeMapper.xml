@@ -1,0 +1,51 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tonight.mapper.BikeMapper">
+
+    <!--<sql id="product-columns">-->
+        <!--pid,pname,providerid,ptype,num,status-->
+    <!--</sql>-->
+
+    <insert id="add" parameterType="bike">
+        INSERT INTO bike VALUES (#{bid},#{bno},#{pid},#{btype},#{num},#{status})
+    </insert>
+
+    <delete id="delectByBid" parameterType="java.lang.String">
+        delete from bike where bid in
+        <foreach collection="pids" item="bid" open="(" close=")" separator=",">
+            #{bid}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="bike">
+        UPDATE bike
+        SET btype = #{btype},
+        pid = #{pid}
+        <if test="num!=null">
+            ,num = #{num}
+        </if>
+        where bid = #{bid}
+    </update>
+
+    <select id="queryByBid" parameterType="java.lang.String" resultType="bike">
+        SELECT  * from bike where bid =#{pid}
+    </select>
+
+    <select id="queryByBnoAndPid" resultType="bike">
+        select * from bike where bno =#{bno} and pid = #{pid}
+    </select>
+
+    <select id="listByBnoAndPid" resultType="bike">
+        select a.*,prname from bike a left join provider b on a.pid=b.prid
+        <where>
+            <if test="bno!=null and bno!=''">
+                and a.bno like '%${bno}%'
+            </if>
+            <if test="pid!=null">
+                and a.pid =#{pid}
+            </if>
+        </where>
+    </select>
+
+</mapper>

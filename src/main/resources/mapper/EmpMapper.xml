@@ -1,0 +1,71 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tonight.mapper.EmpMapper">
+
+    <sql id="emp-columns">
+        id,ename,eno,job,salary,did,hiredate,password
+    </sql>
+
+    <!--新增-->
+    <insert id="add">
+        insert into emp VALUES (#{id},#{ename},#{eno},#{job},#{salary},#{did},#{hiredate},#{password})
+    </insert>
+
+
+    <select id="getEmpByEno" parameterType="java.lang.String" resultType="emp">
+        SELECT * from emp where eno = #{eno}
+    </select>
+
+    <select id="getEmpByNameAndPass" parameterType="java.lang.String" resultType="emp">
+        SELECT * from emp where name = #{name} AND password=#{password}
+    </select>
+
+    <select id="query" parameterType="emp" resultType="emp">
+        select a.*,dname from emp a left join dept b on a.did=b.id
+        <where>
+            <if test="ename!=null and ename!=''">
+               and a.ename like '%${ename}%'
+            </if>
+            <if test="did!=null">
+               and a.did =#{did}
+            </if>
+            <if test="startTime != null">
+               and hiredate >=#{startTime}
+            </if>
+            <if test="endTime != null">
+               and hiredate <![CDATA[<=]]> #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--由id开始查找-->
+    <select id="findEmpById" resultType="emp" parameterType="int">
+        select a.*,dname from emp a left join dept b on a.did=b.id where a.id = #{id}
+    </select>
+
+    <!--更新-->
+    <update id="update" parameterType="emp">
+        UPDATE emp
+        SET ename = #{ename},
+        job = #{job},
+        salary = #{salary}
+        <if test="did!=null">
+            , did =#{did}
+        </if>
+        where id = #{id}
+    </update>
+
+
+    <!--批量删除-->
+    <delete id="remove" parameterType="java.util.List">
+        delete from emp where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updatePass" parameterType="map">
+        UPDATE emp set password = #{password} where id = #{id}
+    </update>
+</mapper>

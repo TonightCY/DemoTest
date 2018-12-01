@@ -1,0 +1,28 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tonight.mapper.DetailMapper">
+    <insert id="add" parameterType="detail">
+        INSERT into detail VALUE (#{did},#{bid},#{dname},#{dmobile},#{starttime},#{endtime})
+    </insert>
+
+    <select id="query" resultType="detail">
+        select * from detail
+    </select>
+
+    <update id="returnbike" parameterType="detail" >
+        UPDATE detail set endtime =#{endtime}  where did = #{did}
+    </update>
+
+    <select id="getCountByDid" parameterType="java.lang.String" resultType="detail">
+        select * from detail where did LIKE '%${did}%'
+    </select>
+
+    <select id="getCountByBidAndDid" parameterType="java.lang.String" resultType="detail">
+        select b.btype as btype ,count(*) as count from detail d left join bike b on d.bid = b.bid where d.did LIKE '%${did}%' GROUP by b.btype
+    </select>
+
+    <select id="getlistIfBidExist" resultType="detail">
+        select bid from detail where endtime is null GROUP BY bid;
+    </select>
+</mapper>
