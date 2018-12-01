@@ -22,6 +22,8 @@ public class Bike {
     String author;
     String prname;
 
+    String test;
+
     @Override
     public String toString() {
         return "Bike{" +
