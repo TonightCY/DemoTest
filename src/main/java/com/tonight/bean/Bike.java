@@ -19,6 +19,7 @@ public class Bike {
 
     String testString;
 
+    String author;
     String chongtulaiba;
 
 
