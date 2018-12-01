@@ -17,6 +17,8 @@ public class Bike {
     Integer num;
     Integer status;
 
+    String testString;
+
 
     String prname;
 
