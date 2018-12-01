@@ -98,4 +98,12 @@ public class Bike {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public String getTestString() {
+        return testString;
+    }
+
+    public void setTestString(String testString) {
+        this.testString = testString;
+    }
 }
