@@ -91,14 +91,6 @@ public class Bike {
         this.prname = prname;
     }
 
-    public String getTestString() {
-        return testString;
-    }
-
-    public void setTestString(String testString) {
-        this.testString = testString;
-    }
-
     public String getAuthor() {
         return author;
     }
